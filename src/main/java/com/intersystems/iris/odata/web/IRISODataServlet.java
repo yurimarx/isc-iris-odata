@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.intersystems.iris.odata.service.IRISEdmProvider;
 import com.intersystems.iris.odata.service.IRISEntityCollectionProcessor;
+import com.intersystems.iris.odata.service.IRISEntityProcessor;
 
 public class IRISODataServlet extends HttpServlet {
 
@@ -29,6 +30,7 @@ public class IRISODataServlet extends HttpServlet {
 	      ServiceMetadata edm = odata.createServiceMetadata(new IRISEdmProvider(), new ArrayList<EdmxReference>());
 	      ODataHttpHandler handler = odata.createHandler(edm);
 	      handler.register(new IRISEntityCollectionProcessor());
+	      handler.register(new IRISEntityProcessor());
 
 	      handler.process(req, resp);
 	    } catch (RuntimeException e) {

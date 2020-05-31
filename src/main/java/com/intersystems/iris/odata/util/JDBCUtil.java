@@ -12,7 +12,7 @@ public class JDBCUtil {
 	private JDBCUtil() {
 		try {
 			Class.forName("com.intersystems.jdbc.IRISDriver").newInstance();
-			String url = "jdbc:IRIS://localhost:9091/Contest";
+			String url = "jdbc:IRIS://192.168.56.1:9091/Contest";
 			String username = "_SYSTEM";
 			String password = "welcome1";
 			connection = DriverManager.getConnection(url, username, password);

@@ -22,7 +22,7 @@ import com.intersystems.iris.odata.util.CatalogUtil;
 
 public class IRISEdmProvider extends CsdlAbstractEdmProvider {
 
-	public static final String NAMESPACE = "OData";
+	public static final String NAMESPACE = "Contest_Data";
 	
 	public static final String CONTAINER_NAME = "Contest_Data";
 	

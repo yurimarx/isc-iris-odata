@@ -88,7 +88,7 @@ public class IRISEntityCollectionProcessor implements EntityCollectionProcessor 
 
 		Connection conn = JDBCUtil.getInstance().connection;
 
-		String sql = "SELECT * FROM " + edmEntitySet.getEntityContainer().getName() + "." + edmEntitySet.getName();
+		String sql = "SELECT * FROM " + edmEntitySet.getEntityContainer().getNamespace() + "." + edmEntitySet.getName();
 
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -135,7 +135,7 @@ public class IRISEntityCollectionProcessor implements EntityCollectionProcessor 
 		return collection;
 
 	}
-
+	
 	private URI createId(String entitySetName, Object id) {
 		try {
 			return new URI(entitySetName + "(" + String.valueOf(id) + ")");
