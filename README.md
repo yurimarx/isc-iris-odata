@@ -17,3 +17,13 @@
 ##### After clone this repository go to root path and execute following instruction:
 - mvnw spring-boot:run
 
+
+## Config Intersystems IRIS Connection
+- Access http://localhost:8080/
+- Set database parameters and submit
+- Stop and start again the docker instance or spring application to run with new parameters
+
+## Use OData with Intersystems IRIS connection
+- Access http://localhost:8080/odata.svc/ to list entities (only persistent entities will be presented)
+- To list entity data access http://localhost:8080/odata.svc/EntityName
+- To detail entity data access http://localhost:8080/odata.svc/EntityName(1)
