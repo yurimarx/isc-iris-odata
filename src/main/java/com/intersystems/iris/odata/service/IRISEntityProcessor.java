@@ -48,7 +48,7 @@ public class IRISEntityProcessor implements EntityProcessor {
 		EdmEntitySet edmEntitySet = uriResourceEntitySet.getEntitySet();
 
 		List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
-		Entity entity = CrudService.readEntityData(edmEntitySet, keyPredicates);
+		Entity entity = IRISNativeAPIJavaService.readEntityData(edmEntitySet, keyPredicates);
 
 		EdmEntityType entityType = edmEntitySet.getEntityType();
 
@@ -77,7 +77,7 @@ public class IRISEntityProcessor implements EntityProcessor {
 		DeserializerResult result = deserializer.entity(requestInputStream, edmEntityType);
 		Entity requestEntity = result.getEntity();
 
-		Entity createdEntity = CrudService.createEntityData(edmEntitySet, requestEntity);
+		Entity createdEntity = IRISNativeAPIJavaService.createEntityData(edmEntitySet, requestEntity);
 
 		ContextURL contextUrl = ContextURL.with().entitySet(edmEntitySet).build();
 		EntitySerializerOptions options = EntitySerializerOptions.with().contextURL(contextUrl).build();
@@ -107,7 +107,7 @@ public class IRISEntityProcessor implements EntityProcessor {
 		EdmEntitySet edmEntitySet = uriResourceEntitySet.getEntitySet();
 
 		List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
-		CrudService.deleteEntityData(edmEntitySet, keyPredicates);
+		IRISNativeAPIJavaService.deleteEntityData(edmEntitySet, keyPredicates);
 
 		response.setStatusCode(HttpStatusCode.NO_CONTENT.getStatusCode());
 
