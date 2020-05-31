@@ -9,11 +9,11 @@
 
 ## Build and run
 #### Docker alternative
-#####After clone this repository go to root path and execute following instruction:
+##### After clone this repository go to root path and execute following instruction:
 - docker build -t odata:1.0.0 .
 - docker run -p 8080:8080 odata:1.0.0
 
 #### Maven alternative
-#####After clone this repository go to root path and execute following instruction:
+##### After clone this repository go to root path and execute following instruction:
 - mvnw spring-boot:run
 
