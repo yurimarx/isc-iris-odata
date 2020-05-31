@@ -26,7 +26,6 @@ import com.intersystems.iris.odata.util.CatalogUtil;
 import com.intersystems.iris.odata.util.JDBCUtil;
 import com.intersystems.iris.odata.util.ODataUtil;
 import com.intersystems.jdbc.IRIS;
-import com.intersystems.jdbc.IRISConnection;
 import com.intersystems.jdbc.IRISObject;
 
 public class IRISNativeAPIJavaService {
@@ -124,31 +123,20 @@ public class IRISNativeAPIJavaService {
 
 	private static Entity createEntity(EdmEntityType edmEntityType, Entity entity) {
 
-		IRISConnection conn = (IRISConnection) JDBCUtil.getInstance().connection;
-		
 		String classPackage = edmEntityType.getNamespace().replaceAll("_", ".");
-		
+
 		String irisClass = classPackage + "." + edmEntityType.getName();
-		
-		IRIS iris;
-		
-		try {
-			iris = IRIS.createIRIS(conn);
-			
-			IRISObject instance = (IRISObject) iris.classMethodObject(irisClass, "%New");
 
-			for (Property property : entity.getProperties()) {
-				instance.set(property.getName(), property.getValue());
-			}
+		IRIS iris = JDBCUtil.getInstance().iris;
 
-			instance.invokeObject("%Save");
+		IRISObject instance = (IRISObject) iris.classMethodObject(irisClass, "%New");
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return entity;
+		for (Property property : entity.getProperties()) {
+			instance.set(property.getName(), property.getValue());
 		}
-		
-		
+
+		instance.invokeObject("%Save");
+
 		return entity;
 
 	}
@@ -165,17 +153,14 @@ public class IRISNativeAPIJavaService {
 	private static void deleteEntity(EdmEntityType edmEntityType, List<UriParameter> keyParams)
 			throws ODataApplicationException {
 
-		Connection conn = JDBCUtil.getInstance().connection;
+		
+		String classPackage = edmEntityType.getNamespace().replaceAll("_", ".");
 
-		try {
+		String irisClass = classPackage + "." + edmEntityType.getName();
+		
+		JDBCUtil.getInstance().iris.classMethodObject(irisClass, "%DeleteId", keyParams.get(0).getText());
 
-			conn.createStatement().execute("DELETE FROM " + edmEntityType.getNamespace() + "." + edmEntityType.getName()
-					+ " WHERE ID = " + keyParams.get(0).getText());
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
+		
 	}
 
 }
