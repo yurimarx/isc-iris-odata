@@ -34,3 +34,6 @@
 - To list entity data access http://localhost:8080/odata.svc/EntityName
 - To detail entity data access http://localhost:8080/odata.svc/EntityName(1)
 - If you want return results in json format use http://localhost:8080/odata.svc/Animal?$format=application/json
+
+## Video about solution
+- YouTube: https://youtu.be/9lhkuPfQ-R8
