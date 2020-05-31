@@ -1,5 +1,7 @@
 package com.intersystems.iris.odata.service;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,17 +20,42 @@ import org.apache.olingo.commons.api.ex.ODataException;
 
 import com.intersystems.iris.odata.model.SQLElement;
 import com.intersystems.iris.odata.util.CatalogUtil;
-
+import com.intersystems.iris.odata.util.H2Util;
 
 public class IRISEdmProvider extends CsdlAbstractEdmProvider {
 
-	public static final String NAMESPACE = "Contest_Data";
-	
-	public static final String CONTAINER_NAME = "Contest_Data";
-	
-	public static final FullQualifiedName CONTAINER = new FullQualifiedName(NAMESPACE, CONTAINER_NAME);
+	private String getNamespace() {
 
-	
+		Connection h2Conn = H2Util.getInstance().connection;
+
+		try {
+			ResultSet rs = h2Conn.createStatement().executeQuery("SELECT * FROM param");
+			rs.next();
+			return rs.getString("schema");
+		} catch (Exception e) {
+			return null;
+
+		}
+	}
+
+	private String getContainerName() {
+		
+		Connection h2Conn = H2Util.getInstance().connection;
+
+		try {
+			ResultSet rs = h2Conn.createStatement().executeQuery("SELECT * FROM param");
+			rs.next();
+			return rs.getString("schema");
+		} catch (Exception e) {
+			return null;
+
+		}
+	}
+
+	private FullQualifiedName getContainer() {
+		return new FullQualifiedName(getNamespace(), getContainerName());
+	}
+
 	private FullQualifiedName getEdmType(String JDBCType) {
 
 		if (JDBCType.equals("integer") || JDBCType.equals("bigint") || JDBCType.equals("bigint")) {
@@ -76,20 +103,19 @@ public class IRISEdmProvider extends CsdlAbstractEdmProvider {
 
 	@Override
 	public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) throws ODataException {
-		
-		
+
 		CsdlEntitySet entitySet = new CsdlEntitySet();
 		entitySet.setName(entitySetName);
-		entitySet.setType(new FullQualifiedName(NAMESPACE, entitySetName));
+		entitySet.setType(new FullQualifiedName(getNamespace(), entitySetName));
 		return entitySet;
-	
+
 	}
 
 	@Override
 	public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) throws ODataException {
-		if (entityContainerName == null || entityContainerName.equals(CONTAINER)) {
+		if (entityContainerName == null || entityContainerName.equals(getContainer())) {
 			CsdlEntityContainerInfo entityContainerInfo = new CsdlEntityContainerInfo();
-			entityContainerInfo.setContainerName(CONTAINER);
+			entityContainerInfo.setContainerName(getContainer());
 			return entityContainerInfo;
 		}
 
@@ -98,28 +124,28 @@ public class IRISEdmProvider extends CsdlAbstractEdmProvider {
 
 	@Override
 	public List<CsdlSchema> getSchemas() throws ODataException {
-		
+
 		List<CsdlSchema> schemas = new ArrayList<CsdlSchema>();
-		
+
 		CsdlSchema schema = new CsdlSchema();
-		schema.setNamespace(NAMESPACE);
-		
-		ArrayList<SQLElement> sqlTables = CatalogUtil.getSQLTables(CONTAINER_NAME);
-		
+		schema.setNamespace(getNamespace());
+
+		ArrayList<SQLElement> sqlTables = CatalogUtil.getSQLTables(getContainerName());
+
 		List<CsdlEntityType> entityTypes = new ArrayList<CsdlEntityType>();
-		
-		for(SQLElement sqlTable:sqlTables) {
-			
+
+		for (SQLElement sqlTable : sqlTables) {
+
 			FullQualifiedName entityNamespace = new FullQualifiedName(schema.getNamespace(), sqlTable.getName());
-			
+
 			entityTypes.add(getEntityType(entityNamespace));
-			
+
 		}
-		
+
 		schema.setEntityTypes(entityTypes);
-		
+
 		schema.setEntityContainer(getEntityContainer());
-				
+
 		schemas.add(schema);
 
 		return schemas;
@@ -128,17 +154,17 @@ public class IRISEdmProvider extends CsdlAbstractEdmProvider {
 
 	@Override
 	public CsdlEntityContainer getEntityContainer() throws ODataException {
-		
-		List<SQLElement> sqlTables = CatalogUtil.getSQLTables(CONTAINER_NAME);
-		
+
+		List<SQLElement> sqlTables = CatalogUtil.getSQLTables(getContainerName());
+
 		List<CsdlEntitySet> entitySets = new ArrayList<CsdlEntitySet>();
-		
-		for(SQLElement sqlTable:sqlTables) {
-			entitySets.add(getEntitySet(CONTAINER, sqlTable.getName()));
+
+		for (SQLElement sqlTable : sqlTables) {
+			entitySets.add(getEntitySet(getContainer(), sqlTable.getName()));
 		}
-		
+
 		CsdlEntityContainer entityContainer = new CsdlEntityContainer();
-		entityContainer.setName(CONTAINER_NAME);
+		entityContainer.setName(getContainerName());
 		entityContainer.setEntitySets(entitySets);
 
 		return entityContainer;
