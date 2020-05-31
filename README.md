@@ -7,6 +7,11 @@
 - OData specification v4 is mantained by OASIS in: https://www.odata.org/.
 - This product uses: Apache Olingo (to implement OData v4), Spring Boot to run as a microservice.
 
+
+## Clone the project
+- Clone from: https://github.com/yurimarx/isc-iris-odata.git
+
+
 ## Build and run
 #### Docker alternative
 ##### After clone this repository go to root path and execute following instruction:
